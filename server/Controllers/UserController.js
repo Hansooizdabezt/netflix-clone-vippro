@@ -113,4 +113,25 @@ const deleteUserProfile = async (req, res) => {
    res.status(400).json({ message: error.message });
 }
 }
-export { registerUser, loginUser, updateUserProfle,deleteUserProfile };
+
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(req.user._id);
+    if(user && (await bcrypt.compare(oldPassword,user.password))){
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      user.password = hashedPassword;
+      await user.save();
+      res.json({message: "Password changed successfully"})
+    }
+    else{
+      res.status(401);
+      throw new Error("Invalid old password");
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
+export { registerUser, loginUser, updateUserProfle,deleteUserProfile,changePassword };
