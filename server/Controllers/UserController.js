@@ -94,4 +94,23 @@ const updateUserProfle = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-export { registerUser, loginUser, updateUserProfle };
+
+const deleteUserProfile = async (req, res) => {
+  try {
+  const user = await User.findById(req.user._id);
+  if(user){
+    if(user.isAdmin){
+      res.status(400);
+      throw new Error("Cant delete admin");
+  }
+  await user.deleteOne();
+  res.json({message: "User deleted successfully"})
+} else{
+  res.status(500);
+  throw new Error("User not found");  
+}
+} catch (error) {
+   res.status(400).json({ message: error.message });
+}
+}
+export { registerUser, loginUser, updateUserProfle,deleteUserProfile };
