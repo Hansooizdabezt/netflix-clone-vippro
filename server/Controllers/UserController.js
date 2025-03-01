@@ -86,8 +86,7 @@ const updateUserProfle = async (req, res) => {
         isAdmin: updatedUser.isAdmin,
         token: generateToken(updatedUser._id),
       });
-    } 
-    else {
+    } else {
       res.status(500).json({ message: "User not found" });
     }
   } catch (error) {
@@ -97,41 +96,129 @@ const updateUserProfle = async (req, res) => {
 
 const deleteUserProfile = async (req, res) => {
   try {
-  const user = await User.findById(req.user._id);
-  if(user){
-    if(user.isAdmin){
-      res.status(400);
-      throw new Error("Cant delete admin");
+    const user = await User.findById(req.user._id);
+    if (user) {
+      if (user.isAdmin) {
+        res.status(400);
+        throw new Error("Cant delete admin");
+      }
+      await user.deleteOne();
+      res.json({ message: "User deleted successfully" });
+    } else {
+      res.status(500);
+      throw new Error("User not found");
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
-  await user.deleteOne();
-  res.json({message: "User deleted successfully"})
-} else{
-  res.status(500);
-  throw new Error("User not found");  
-}
-} catch (error) {
-   res.status(400).json({ message: error.message });
-}
-}
+};
 
 const changePassword = async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   try {
     const user = await User.findById(req.user._id);
-    if(user && (await bcrypt.compare(oldPassword,user.password))){
+    if (user && (await bcrypt.compare(oldPassword, user.password))) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
       user.password = hashedPassword;
       await user.save();
-      res.json({message: "Password changed successfully"})
-    }
-    else{
+      res.json({ message: "Password changed successfully" });
+    } else {
       res.status(401);
       throw new Error("Invalid old password");
     }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
-}
+};
 
-export { registerUser, loginUser, updateUserProfle,deleteUserProfile,changePassword };
+const getLikeMovies = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate("likeMovies");
+    if (user) {
+      res.json(user.likeMovies);
+    } else {
+      res.status(500).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const addLikeMovie = async (req, res) => {
+  const { movieId } = req.body;
+  try {
+    if (user.likeMovies.includes(movieId)) {
+      if (isMovieLiked) {
+        res.status(400);
+        throw new Error("Movie already liked");
+      }
+      user.likeMovies.push(movieId);
+      await user.save();
+      res.json(use.likeMovies);
+    } else {
+      res.status(500).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const deleteLikedMovies = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.likeMovies = {};
+      await user.save();
+      res.json({ message: "All liked movies deleted successfully" });
+    } else {
+      res.status(500).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    if (users) {
+      return res.status(200).json({totalUser: users.length, users });
+    } else {
+      res.status(500).json({ message: "Users not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      if(user.isAdmin) {
+        res.status(400);
+        throw new Error("Cant delete admin");
+      }
+      await user.deleteOne();
+      res.json({ message: "User deleted successfully" });
+    } else {
+      res.status(500).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export {
+  registerUser,
+  loginUser,
+  updateUserProfle,
+  deleteUserProfile,
+  changePassword,
+  getLikeMovies,
+  addLikeMovie,
+  deleteLikedMovies,
+  getAllUsers,
+  deleteUser,
+};
