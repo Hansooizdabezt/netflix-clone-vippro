@@ -166,7 +166,7 @@ const updateMovie = async (req, res) => {
       movie.video = video || movie.video;
       movie.casts = casts || movie.casts;
 
-     const updatedMovie = await movie.save();
+      const updatedMovie = await movie.save();
       res.status(201).json(updatedMovie);
     } else {
       res.status(404);
@@ -178,16 +178,30 @@ const updateMovie = async (req, res) => {
 };
 
 const deleteMovie = async (req, res) => {
-    try {
-     const movie= await Movie.findByIdAndDelete(req.params.id);
-      if (!movie) {
-        return res.status(404).json({ message: "Movie not found" });
-      }
-      res.status(200).json({ message: "Movie deleted successfully" });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+  try {
+    const movie = await Movie.findByIdAndDelete(req.params.id);
+    if (!movie) {
+      return res.status(404).json({ message: "Movie not found" });
     }
+    res.status(200).json({ message: "Movie deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
+};
+
+const deleteAllMovies = async (req, res) => {
+  try {
+    const movies = await Movie.deleteMany({});
+    if (movies.deletedCount === 0) {
+      return res
+        .status(404)
+        .json({ message: "There's have no movie to delete" });
+    }
+    res.status(200).json({ message: "All movies deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 export {
   importMovies,
@@ -198,5 +212,6 @@ export {
   getRandomMovies,
   createMovieReview,
   updateMovie,
-  deleteMovie
+  deleteMovie,
+  deleteAllMovies,
 };
