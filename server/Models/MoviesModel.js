@@ -67,7 +67,7 @@ const moviesSchema = new mongoose.Schema({
   casts: [
     {
       name: { type: String, required: true },
-      iamge: { type: String, required: true },
+      image: { type: String, required: true },
     },
   ],
 },{
