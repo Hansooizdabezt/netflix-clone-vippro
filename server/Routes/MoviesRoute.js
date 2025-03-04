@@ -1,5 +1,5 @@
 import express from "express";
-import { getBotRateMovies, getMovieById, getMovies, getTopRateMovies, importMovies } from "../Controllers/MoviesController.js";
+import { getBotRateMovies, getMovieById, getMovies, getRandomMovies, getTopRateMovies, importMovies } from "../Controllers/MoviesController.js";
 
 const router = express.Router();
 
@@ -9,6 +9,7 @@ router.get('/', getMovies);
 router.get('/:id', getMovieById);
 router.get('/rated/top', getTopRateMovies);
 router.get('/rated/bot', getBotRateMovies);
+router.get('/random/all', getRandomMovies);
 
 // *****************PRIVATE ROUTES********************
 

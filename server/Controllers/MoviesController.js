@@ -83,4 +83,18 @@ const getBotRateMovies = async (req, res) => {
     }
 }
 
-export {importMovies, getMovies,getMovieById, getTopRateMovies, getBotRateMovies};
+const getRandomMovies = async (req, res) => {
+    try {
+        const movie = await Movie.aggregate([{$sample: {size: 8 }}]);
+        if(movie){
+            res.json(movie);
+        } else{
+            res.status(404).json({message: "There is not movie!!"});
+        }
+    } catch (error) {
+        res.status(400).json({message: error.message});
+
+    }
+}
+
+export {importMovies, getMovies,getMovieById, getTopRateMovies, getBotRateMovies, getRandomMovies};
