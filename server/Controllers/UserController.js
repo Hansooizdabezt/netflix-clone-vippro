@@ -167,7 +167,7 @@ const deleteLikedMovies = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (user) {
-      user.likeMovies = {};
+      user.likeMovies = [];
       await user.save();
       res.json({ message: "All liked movies deleted successfully" });
     } else {
