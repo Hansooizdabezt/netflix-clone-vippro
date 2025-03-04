@@ -1,5 +1,6 @@
 import express from "express";
-import { getBotRateMovies, getMovieById, getMovies, getRandomMovies, getTopRateMovies, importMovies } from "../Controllers/MoviesController.js";
+import { createMovieReview, getBotRateMovies, getMovieById, getMovies, getRandomMovies, getTopRateMovies, importMovies } from "../Controllers/MoviesController.js";
+import { admin, protect } from "../middlewares/Auth.js";
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.get('/rated/bot', getBotRateMovies);
 router.get('/random/all', getRandomMovies);
 
 // *****************PRIVATE ROUTES********************
-
+router.post("/:id/reviews", protect, createMovieReview);
 
 // *****************ADMIN ROUTES********************
 

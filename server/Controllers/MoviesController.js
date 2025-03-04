@@ -97,4 +97,41 @@ const getRandomMovies = async (req, res) => {
     }
 }
 
-export {importMovies, getMovies,getMovieById, getTopRateMovies, getBotRateMovies, getRandomMovies};
+const createMovieReview = async (req, res) => {
+    const {rating, comment} = req.body;
+    try {
+        const movie = await Movie.findById(req.params.id);
+        if(movie){
+            const alreadyReviewed = await movie.reviews.find(
+                (r) => r.userId.toString() === req.user._id.toString(),
+            );
+            if(alreadyReviewed){
+                return res.status(400).json({message: "You have already reviewed this movie!"});
+            }
+            const review = {
+                userName: req.user.fullName,
+                userId: req.user._id,
+                userImage: req.body.image,
+                rating: Number(rating),
+                comment,
+            }
+            movie.reviews.push(review);
+            movie.numberOfRates = movie.reviews.length;
+
+            //calculate the new rate
+            movie.rate = movie.reviews.reduce((acc,item) =>item.rating + acc,0) / movie.reviews.length;
+
+            await movie.save();
+            res.status(201).json({message: "Review added successfully"});
+
+        } else{
+            res.status(404);
+            throw new Error( "Movie not found!");
+        }
+    } catch (error) {
+        res.status(400).json({message: error.message});
+
+    }
+}
+
+export {importMovies, getMovies,getMovieById, getTopRateMovies, getBotRateMovies, getRandomMovies, createMovieReview};
