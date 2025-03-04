@@ -41,4 +41,46 @@ const getMovies = async (req, res) => {
     }
 }
 
-export {importMovies, getMovies};
+const getMovieById = async (req, res) => {
+    try {
+    const movie = await Movie.findById(req.params.id);
+    if(movie){
+        res.json(movie);
+    } else{
+        res.status(404).json({message: "Movie not found"});
+    }
+    } catch (error) {
+        res.status(400).json({message: error.message});
+
+    }
+}
+
+const getTopRateMovies = async (req, res) => {
+    try {
+        const movie = await Movie.find({}).sort({rate: - 1});
+        if(movie){
+            res.json(movie);
+        } else{
+            res.status(404).json({message: "There is not movie!!"});
+        }
+    } catch (error) {
+        res.status(400).json({message: error.message});
+
+    }
+}
+
+const getBotRateMovies = async (req, res) => {
+    try {
+        const movie = await Movie.find({}).sort({rate: + 1});
+        if(movie){
+            res.json(movie);
+        } else{
+            res.status(404).json({message: "There is not movie!!"});
+        }
+    } catch (error) {
+        res.status(400).json({message: error.message});
+
+    }
+}
+
+export {importMovies, getMovies,getMovieById, getTopRateMovies, getBotRateMovies};
