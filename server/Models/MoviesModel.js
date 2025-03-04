@@ -16,7 +16,6 @@ const moviesSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
   },
   name: {
     type: String,
@@ -71,4 +70,5 @@ const moviesSchema = new mongoose.Schema({
     timestamps: true,
 });
 
-export default mongoose.model("Movies", moviesSchema)
+const Movie =  mongoose.model("Movie", moviesSchema);
+export default Movie;

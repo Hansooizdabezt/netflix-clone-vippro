@@ -148,16 +148,15 @@ const getLikeMovies = async (req, res) => {
 const addLikeMovie = async (req, res) => {
   const { movieId } = req.body;
   try {
-    if (user.likeMovies.includes(movieId)) {
-      if (isMovieLiked) {
-        res.status(400);
-        throw new Error("Movie already liked");
-      }
-      user.likeMovies.push(movieId);
+   const user = await User.findById(req.user._id);
+   if(user) {
+    if(user.likeMovies.includes(movieId)){
+      res.status(400);
+      throw new Error("Movie already liked");
+    }
+    user.likeMovies.push(movieId);
       await user.save();
-      res.json(use.likeMovies);
-    } else {
-      res.status(500).json({ message: "User not found" });
+      res.json(user.likeMovies);
     }
   } catch (error) {
     res.status(400).json({ message: error.message });

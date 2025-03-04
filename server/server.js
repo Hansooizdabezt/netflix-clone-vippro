@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import userRoutes from "./Routes/UserRoute.js"
+import movieRoutes from "./Routes/MoviesRoute.js"
 import { errorHandler } from './middlewares/errorMiddlewares.js';
 
 
@@ -22,6 +23,7 @@ app.get('/', (req,res)=>{
 })
 
 app.use("/api/users", userRoutes)
+app.use("/api/movies", movieRoutes)
 
 app.use(errorHandler)
 
