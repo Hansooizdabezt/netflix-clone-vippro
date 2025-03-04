@@ -45,6 +45,10 @@ const moviesSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  time:{
+    type: Number,
+    required: true,
+  },
   video: {
     type: String,
     // required: true

@@ -1,10 +1,11 @@
 import express from "express";
-import { importMovies } from "../Controllers/MoviesController.js";
+import { getMovies, importMovies } from "../Controllers/MoviesController.js";
 
 const router = express.Router();
 
 // *****************PUBLIC ROUTES********************
 router.post('/import', importMovies);
+router.get('/', getMovies);
 
 // *****************PRIVATE ROUTES********************
 
