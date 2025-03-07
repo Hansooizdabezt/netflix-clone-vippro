@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import userRoutes from "./Routes/UserRoute.js"
 import movieRoutes from "./Routes/MoviesRoute.js"
+import categoryRoutes from "./Routes/CategoriesRoute.js"
 import { errorHandler } from './middlewares/errorMiddlewares.js';
 
 
@@ -24,6 +25,7 @@ app.get('/', (req,res)=>{
 
 app.use("/api/users", userRoutes)
 app.use("/api/movies", movieRoutes)
+app.use("/api/categories", categoryRoutes)
 
 app.use(errorHandler)
 
