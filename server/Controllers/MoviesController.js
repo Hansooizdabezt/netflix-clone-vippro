@@ -203,6 +203,50 @@ const deleteAllMovies = async (req, res) => {
   }
 };
 
+const createMovie = async (req, res) => {
+  try {
+    const {
+      name,
+      desc,
+      image,
+      titleImage,
+      rate,
+      numberOfReviews,
+      category,
+      time,
+      language,
+      year,
+      video,
+      casts,
+    } = req.body;
+
+    const newMovie = new Movie({
+      name,
+      desc,
+      image,
+      titleImage,
+      rate,
+      numberOfReviews,
+      category,
+      time,
+      language,
+      year,
+      video,
+      casts,
+      userId: req.user._id,
+    });
+    if (newMovie) {
+      const createdMovie = await newMovie.save();
+      res.status(201).json(createdMovie);
+    } else {
+      res.status(404);
+      throw new Error("Invalid movie data");
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 export {
   importMovies,
   getMovies,
@@ -214,4 +258,5 @@ export {
   updateMovie,
   deleteMovie,
   deleteAllMovies,
+  createMovie
 };
